@@ -1,0 +1,30 @@
+name: Auto-Fix Missing Init Files
+
+on:
+  workflow_dispatch: 
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write 
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Generate Missing __init__.py Files
+      run: |
+        for dir in apps/display_server apps/orchestrator core/pipeline core/polygraph core/s3if_c0n8ious drivers/biometric/fingerprint drivers/kinetic/motion_imu drivers/neural/eeg_brainflow drivers/neural/emg_somatic drivers/optical/face_mesh drivers/physiological/ecg_cardio shared; do
+          mkdir -p "$dir"
+          touch "$dir/__init__.py"
+        done
+
+    - name: Commit and Push Fixes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git commit -m "arch: auto-generate missing __init__.py package boundaries" || echo "No changes to commit"
+        git push origin main
+        
