@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  orchestrator:
+    build: .
+    container_name: t3l3pathy_core
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - .:/app
+    command: python apps/orchestrator/main.py
+    network_mode: host
+
+  insightface_driver:
+    image: python:3.10-slim
+    container_name: t3l3pathy_vision
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia # Requires NVIDIA Container Toolkit
+              count: 1
+              capabilities: [gpu]
+    command: python drivers/optical/face_mesh/stream.py
+    network_mode: host
+    
