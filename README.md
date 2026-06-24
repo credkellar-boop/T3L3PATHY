@@ -1,4 +1,4 @@
-## What T3L3PATHY Is About
+## T3L3PHATY
 
 ### 📦 Core Programming Languages
 ![Python](https://img.shields.io/badge/Python_3.11-3776AB?style=for-the-badge&logo=python&logoColor=white) 
