@@ -40,10 +40,10 @@
 ![Asyncio](https://img.shields.io/badge/Asyncio-I%2FO-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Aiofiles](https://img.shields.io/badge/Aiofiles-Async_Logging-1565C0?style=for-the-badge)
 ![Psutil](https://img.shields.io/badge/Psutil-Host_Telemetry-4CAF50?style=for-the-badge)
-![TypedDict](https://img.shields.io/badge/TypedDict-Strict_Schemas-009688?style=for-the-badge) 📝
+![TypedDict](https://img.shields.io/badge/TypedDict-Strict_Schemas-009688?style=for-the-badge)
 
 ### 👥 Client Frameworks
-![UI Render Loop](https://img.shields.io/badge/Display_Server-Real--Time_UI-E91E63?style=for-the-badge) 📺
+![UI Render Loop](https://img.shields.io/badge/Display_Server-Real--Time_UI-E91E63?style=for-the-badge)
 
 **T3L3PATHY** is an advanced, multi-modal biometric and cognitive sensor fusion mono-repo ecosystem. At its core, the project bridges the gap between human physiological computing and artificial intelligence by merging real-time biological data with a high-level cognitive orchestration system.
 
