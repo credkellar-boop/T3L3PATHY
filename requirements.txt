@@ -1,0 +1,19 @@
+# T3L3PATHY Core Stack Dependencies
+
+# AI & Orchestration
+google-genai>=0.1.1
+
+# Central Nervous System (EEG/EMG)
+brainflow>=5.11.0
+
+# Autonomic & Physiological Processing (ECG/PPG/EDA)
+neurokit2>=0.2.7
+numpy>=1.24.0
+scipy>=1.10.0
+
+# Computer Vision & Biometrics (Face/Eye/IR)
+opencv-python>=4.9.0
+mediapipe>=0.10.11
+
+# Async & Multiplexing Infrastructure
+asyncio>=3.4.3
