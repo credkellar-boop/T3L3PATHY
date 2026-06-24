@@ -60,3 +60,16 @@ if __name__ == "__main__":
     orchestrator = T3l3pathyOrchestrator()
     asyncio.run(orchestrator.runtime_loop())
   
+# snippet in main.py
+async def runtime_loop(self):
+    # 1. Fetch current frame
+    frame = await self.multiplexer.get_synchronized_frame()
+    
+    # 2. Recall previous context from AWS
+    embedding = self.client.embed_content(model="text-embedding-004", contents=str(frame))
+    relevant_history = self.aws_memory.recall_memory(embedding.vector)
+    
+    # 3. Prime Gemini with history + current frame
+    prompt = f"Previous context: {relevant_history}. Current telemetry: {frame}. Action?"
+    # ... (rest of orchestration)
+    
