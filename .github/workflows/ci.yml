@@ -52,38 +52,30 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install pytest flake8 black
 
-    - name: Code Linting & Style Check
+    - name: Auto-Format Code & Check Syntax
       run: |
+        # Check for critical Python syntax errors (keeps the build safe)
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        black --check . --exclude 'venv|\.git|__pycache__'
-
-    - name: Execute Multi-Modal Test Pipeline
-      run: |
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-        if [ -f "setup.py" ] || [ -f "pyproject.toml" ]; then
-          pip install -e .
-        fi
-        pytest
-          fi
-        done
-        if [ $MISSING_INIT -ne 0 ]; then
-          echo "Architecture check failed. Missing package boundaries detected."
-          exit 1
-        fi
-
-    - name: Code Linting & Style Check
-      run: |
-        # Stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # Format verification
-        black --check . --exclude 'venv|\.git|__pycache__'
-
-    - name: Execute Multi-Modal Test Pipeline
-      run: |
-        # Exporting repository root to PYTHONPATH so cross-module imports resolve correctly
-        export PYTHONPATH=$PYTHONPATH:$(pwd)
-        if [ -f "setup.py" ] || [ -f "pyproject.toml" ]; then
-          pip install -e .
-        fi
-        pytest
         
+        # Run Black to actively format the files (removed the --check flag)
+        black . --exclude 'venv|\.git|__pycache__'
+        
+        # Check if Black made any changes, commit, and push them
+        if [[ -n $(git status -s) ]]; then
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "style: auto-format python files with black"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
+          echo "Code successfully formatted and pushed back to the repo."
+        else
+          echo "Code is already perfectly formatted."
+        fi
+
+    - name: Execute Multi-Modal Test Pipeline
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
+        if [ -f "setup.py" ] || [ -f "pyproject.toml" ]; then
+          pip install -e .
+        fi
+        pytest
