@@ -1,5 +1,9 @@
 ## T3L3PHATY
 
+<p align="center">
+  <img src="1782294816743.png" alt="Profile Image" width="400"/>
+</p>
+
 ### 📦 Core Programming Languages
 ![Python](https://img.shields.io/badge/Python_3.11-3776AB?style=for-the-badge&logo=python&logoColor=white) 
 
