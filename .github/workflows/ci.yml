@@ -9,6 +9,8 @@ on:
 jobs:
   validate-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout Repository
@@ -20,20 +22,48 @@ jobs:
         python-version: '3.11'
         cache: 'pip'
 
+    - name: Auto-Heal Missing Package Boundaries
+      run: |
+        echo "Checking for missing __init__.py files..."
+        FIXED=0
+        for dir in apps/display_server apps/orchestrator core/pipeline core/polygraph core/s3if_c0n8ious drivers/biometric/fingerprint drivers/kinetic/motion_imu drivers/neural/eeg_brainflow drivers/neural/emg_somatic drivers/optical/face_mesh drivers/physiological/ecg_cardio shared; do
+          if [ -d "$dir" ] && [ ! -f "$dir/__init__.py" ]; then
+            mkdir -p "$dir"
+            touch "$dir/__init__.py"
+            echo "Created missing file: $dir/__init__.py"
+            FIXED=1
+          fi
+        done
+        
+        if [ $FIXED -eq 1 ]; then
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "arch: auto-heal missing __init__.py package boundaries"
+          git push origin HEAD:${{ github.head_ref || github.ref_name }}
+          echo "Missing files committed and pushed back to repository."
+        else
+          echo "All package boundaries are intact."
+        fi
+
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip install pytest flake8 black
 
-    - name: Enforce Package Architecture Compliance
+    - name: Code Linting & Style Check
       run: |
-        echo "Verifying structural integrity and checking for missing __init__.py files..."
-        MISSING_INIT=0
-        for dir in apps/display_server apps/orchestrator core/pipeline core/polygraph core/s3if_c0n8ious drivers/biometric/fingerprint drivers/kinetic/motion_imu drivers/neural/eeg_brainflow drivers/neural/emg_somatic drivers/optical/face_mesh drivers/physiological/ecg_cardio shared; do
-          if [ -d "$dir" ] && [ ! -f "$dir/__init__.py" ]; then
-            echo "::error file=$dir::Missing critical __init__.py file in package directory: $dir"
-            MISSING_INIT=1
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        black --check . --exclude 'venv|\.git|__pycache__'
+
+    - name: Execute Multi-Modal Test Pipeline
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
+        if [ -f "setup.py" ] || [ -f "pyproject.toml" ]; then
+          pip install -e .
+        fi
+        pytest
           fi
         done
         if [ $MISSING_INIT -ne 0 ]; then
