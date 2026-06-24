@@ -1,13 +1,14 @@
 from google.cloud import bigquery
 import json
 
+
 class BigQueryProcessor:
     def __init__(self, project_id="t3l3pathy-analytics"):
         self.client = bigquery.Client(project=project_id)
 
     def run_pattern_analysis(self, user_id: str):
         """
-        Executes a query to identify long-term cognitive patterns 
+        Executes a query to identify long-term cognitive patterns
         across millions of rows of historical telemetry data.
         """
         query = f"""

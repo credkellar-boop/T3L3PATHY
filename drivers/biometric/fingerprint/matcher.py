@@ -1,5 +1,6 @@
 import hashlib
 
+
 class BiometricAFISDriver:
     def __init__(self, authorized_print_hash: str):
         self.authorized_print_hash = authorized_print_hash
@@ -15,4 +16,3 @@ class BiometricAFISDriver:
     def verify_scan(self, live_scan_bitmap: bytes) -> bool:
         live_hash = self.extract_minutiae(live_scan_bitmap)
         return live_hash == self.authorized_print_hash
-      

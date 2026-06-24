@@ -3,6 +3,7 @@ import numpy as np
 import glfw
 from OpenGL.GL import *
 
+
 class DisplayServer:
     def __init__(self, width=3840, height=2160):
         self.width = width
@@ -13,7 +14,13 @@ class DisplayServer:
         if not glfw.init():
             raise Exception("GLFW failed to initialize")
         # Create a fullscreen 4K window for the projector output
-        self.window = glfw.create_window(self.width, self.height, "T3L3PATHY_Display", glfw.get_primary_monitor(), None)
+        self.window = glfw.create_window(
+            self.width,
+            self.height,
+            "T3L3PATHY_Display",
+            glfw.get_primary_monitor(),
+            None,
+        )
         glfw.make_context_current(self.window)
 
     def composite_ar_frame(self, ar_elements: list):
@@ -26,9 +33,17 @@ class DisplayServer:
 
         for element in ar_elements:
             # Logic: Map normalized AR coordinates to 4K pixel space
-            x, y = int(element['x'] * self.width), int(element['y'] * self.height)
+            x, y = int(element["x"] * self.width), int(element["y"] * self.height)
             # Render UI/Text overlay
-            cv2.putText(frame, element['text'], (x, y), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 255, 255, 255), 3)
+            cv2.putText(
+                frame,
+                element["text"],
+                (x, y),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                2,
+                (255, 255, 255, 255),
+                3,
+            )
 
         return frame
 
@@ -43,10 +58,12 @@ class DisplayServer:
     def run(self):
         while not glfw.window_should_close(self.window):
             # In production, receive AR elements from the orchestrator via Queue/Pipe
-            frame = self.composite_ar_frame([{'x': 0.1, 'y': 0.1, 'text': 'SYSTEM READY'}])
+            frame = self.composite_ar_frame(
+                [{"x": 0.1, "y": 0.1, "text": "SYSTEM READY"}]
+            )
             self.push_to_projector(frame)
+
 
 if __name__ == "__main__":
     server = DisplayServer()
     server.run()
-  
